@@ -26,7 +26,6 @@ titulo = True
 while True:
 
 
-
     consolidado_acoes_diario = pd.read_excel('Consolidado Ibovespa.xlsx')
 
     acoes_ibov = pd.read_excel('IBOV2.xlsx')
