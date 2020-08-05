@@ -2,19 +2,22 @@ import pandas as pd
 import numpy as np
 import time
 import requests
-from fake_useragent import UserAgent
-from tqdm import tqdm
+#from fake_useragent import UserAgent
 import psycopg2
 from sqlalchemy import create_engine
-import  sqlalchemy
+import sqlalchemy
 import datetime
 
-url = 'https://www.fundamentus.com.br/detalhes.php?papel='
+url = 'http://www.fundamentus.com.br/detalhes.php?papel='
 
-ua = UserAgent()
+#ua = UserAgent(verify_ssl=False)
 
-header = {'User-Agent':str(ua.chrome)}#{"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.75 Safari/537.36",
+#header = {'User-Agent':str(ua.chrome)}#{"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.75 Safari/537.36",
   #"X-Requested-With": "XMLHttpRequest"}
+
+header = {
+  "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36"
+}
 
 titulo = True
 
@@ -22,9 +25,7 @@ titulo = True
 
 while True:
 
-    engine = create_engine('postgresql+psycopg2://yvnujpqhlgajpd:22a197cb5edf921fd317aa732fb59e5e29c48459f9e7be3d99400f08e0f4238d@ec2-35-175-155-248.compute-1.amazonaws.com:5432/dbf3b683gg5rhs')
 
-    conn = engine.connect()
 
     consolidado_acoes_diario = pd.read_excel('Consolidado Ibovespa.xlsx')
 
@@ -32,13 +33,16 @@ while True:
 
     consolidado_acoes = pd.DataFrame()
 
-    for codigo_acao in acoes_ibov["Código"]:
+    for codigo_acao in acoes_ibov["Código"][:2]:
         print('Acessando informacoes da açao:', codigo_acao)
         
-        r = requests.get(url+codigo_acao, headers = header)
+        r = requests.get(url+codigo_acao, headers= header)#, headers = header)
+        print(r.text)
+        
 
         acao = pd.read_html(r.text, decimal=',', thousands='.')
 
+         
 
         acao[0] = acao[0].transpose()
         acao[1] = acao[1].transpose()
@@ -250,13 +254,20 @@ while True:
     consolidado_acoes_diario = consolidado_acoes_diario.append(consolidado_acoes, sort=False)
 
     consolidado_acoes_diario.to_excel('Consolidado Ibovespa.xlsx', index=False)
-    
+
+    engine = create_engine('postgresql+psycopg2://yvnujpqhlgajpd:22a197cb5edf921fd317aa732fb59e5e29c48459f9e7be3d99400f08e0f4238d@ec2-35-175-155-248.compute-1.amazonaws.com:5432/dbf3b683gg5rhs')
+
+    conn = engine.connect()
+
     consolidado_acoes_diario.to_sql(name = 'invest', con = conn, if_exists = 'append', index = False)
+
+    conn.close()
 
     print(datetime.datetime.now())
 
 
-    conn.close()
+
+    
     
     titulo = False
     time.sleep(207*207)
