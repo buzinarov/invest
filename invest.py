@@ -7,8 +7,14 @@ import psycopg2
 from sqlalchemy import create_engine
 import sqlalchemy
 import datetime
+import os
 
 url = 'http://www.fundamentus.com.br/detalhes.php?papel='
+
+proxyDict = {
+    "http"  : os.environ.get('FIXIE_URL', ''),
+    "https" : os.environ.get('FIXIE_URL', '')
+}
 
 #ua = UserAgent(verify_ssl=False)
 
@@ -35,7 +41,7 @@ while True:
     for codigo_acao in acoes_ibov["Código"][:2]:
         print('Acessando informacoes da açao:', codigo_acao)
         
-        r = requests.get(url+codigo_acao, headers = header)#, headers = header)
+        r = requests.get(url+codigo_acao, proxies = proxyDict,headers = header)#, headers = header)
         print(r.text)
         
 
