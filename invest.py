@@ -31,7 +31,7 @@ titulo = True
 
 while True:
 
-
+    session = requests.Session()
     consolidado_acoes_diario = pd.read_excel('Consolidado Ibovespa.xlsx')
 
     acoes_ibov = pd.read_excel('IBOV2.xlsx')
@@ -41,7 +41,7 @@ while True:
     for codigo_acao in acoes_ibov["Código"][:2]:
         print('Acessando informacoes da açao:', codigo_acao)
         
-        r = requests.get(url+codigo_acao, proxies = proxyDict,headers = header)#, headers = header)
+        r = session.get(url+codigo_acao, proxies = proxyDict,headers = header)#, headers = header)
         print(r.text)
         
 
