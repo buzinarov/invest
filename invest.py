@@ -10,7 +10,7 @@ import sqlalchemy
 import datetime
 import os
 
-driver = webdriver.Chrome('C:/Users/Vitor/AppData/Local/Programs/Python/Python37-32/Scripts/chromedriver.exe')
+driver = webdriver.Chrome('C:/Users/Vitor/Desktop/Investimentos/ROBÔ/github/invest/chromedriver.exe')
 
 
 url = 'http://www.fundamentus.com.br/detalhes.php?papel='
