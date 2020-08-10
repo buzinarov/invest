@@ -2,12 +2,16 @@ import pandas as pd
 import numpy as np
 import time
 import requests
+from selenium import webdriver
 #from fake_useragent import UserAgent
 import psycopg2
 from sqlalchemy import create_engine
 import sqlalchemy
 import datetime
 import os
+
+driver = webdriver.Chrome('C:/Users/Vitor/AppData/Local/Programs/Python/Python37-32/Scripts/chromedriver.exe')
+
 
 url = 'http://www.fundamentus.com.br/detalhes.php?papel='
 
@@ -41,13 +45,15 @@ while True:
     for codigo_acao in acoes_ibov["Código"]:
         print('Acessando informacoes da açao:', codigo_acao)
         
-        r = session.get(url+codigo_acao, headers = header)#, headers = header)
+        #driver.get = ('http://www.fundamentus.com.br/detalhes.php?papel='+codigo_acao)
+
+        r = driver.get(url+codigo_acao)#, headers = header)#, headers = header)
         
-        
+        r = driver.page_source
 
         acao = pd.read_html(r.text, decimal=',', thousands='.')
 
-         
+         driver.close()
 
         acao[0] = acao[0].transpose()
         acao[1] = acao[1].transpose()
