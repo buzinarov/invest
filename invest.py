@@ -55,7 +55,7 @@ while True:
         
         #driver.get = ('http://www.fundamentus.com.br/detalhes.php?papel='+codigo_acao)
 
-        driver.get(url+codigo_acao)#, headers = header)#, headers = header)
+        driver.get(url+codigo_acao).get_attribute('outerHTML')#, headers = header)#, headers = header)
         
         r = driver.page_source
 
