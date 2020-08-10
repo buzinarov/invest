@@ -34,7 +34,7 @@ titulo = True
 
 while True:
 
-    session = requests.session()
+    #session = requests.session()
 
     consolidado_acoes_diario = pd.read_excel('Consolidado Ibovespa.xlsx')
 
@@ -51,9 +51,9 @@ while True:
         
         r = driver.page_source
 
-        acao = pd.read_html(r.text, decimal=',', thousands='.')
+        acao = pd.read_html(r, decimal=',', thousands='.')
 
-         driver.close()
+        
 
         acao[0] = acao[0].transpose()
         acao[1] = acao[1].transpose()
@@ -273,7 +273,7 @@ while True:
     consolidado_acoes_diario.to_sql(name = 'invest', con = conn, if_exists = 'append', index = False)
 
     conn.close()
-
+    driver.close()
     print(datetime.datetime.now())
 
 
