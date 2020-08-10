@@ -58,8 +58,8 @@ while True:
         driver.get(url+codigo_acao)#, headers = header)#, headers = header)
         
         r = driver.page_source
-
-        acao = pd.read_html(r)#, decimal=',', thousands='.')
+        print(driver.page_source)
+        acao = pd.read_html(r, decimal=',', thousands='.')
 
         
 
