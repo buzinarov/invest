@@ -21,7 +21,7 @@ chrome_options.add_argument("--no-sandbox")
 
 driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), chrome_options=chrome_options)
 
-url = 'http://www.fundamentus.com.br/detalhes.php?papel='
+
 
 #proxyDict = {
 #    "http"  : os.environ.get('FIXIE_URL', ''),
@@ -43,7 +43,7 @@ titulo = True
 while True:
 
     #session = requests.session()
-
+    url = 'http://www.fundamentus.com.br/detalhes.php?papel='
     consolidado_acoes_diario = pd.read_excel('Consolidado Ibovespa.xlsx')
 
     acoes_ibov = pd.read_excel('IBOV2.xlsx')
@@ -57,9 +57,9 @@ while True:
 
         r = driver.get(url+codigo_acao)#, headers = header)#, headers = header)
         
-        r = driver.page_source
+        t = driver.page_source
 
-        acao = pd.read_html(r, decimal=',', thousands='.')
+        acao = pd.read_html(t, decimal=',', thousands='.')
 
         
 
