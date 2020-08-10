@@ -55,11 +55,11 @@ while True:
         
         #driver.get = ('http://www.fundamentus.com.br/detalhes.php?papel='+codigo_acao)
 
-        r = driver.get(url+codigo_acao)#, headers = header)#, headers = header)
+        driver.get(url+codigo_acao)#, headers = header)#, headers = header)
         
-        t = driver.page_source
+        r = driver.page_source
 
-        acao = pd.read_html(t, decimal=',', thousands='.')
+        acao = pd.read_html(r, decimal=',', thousands='.')
 
         
 
