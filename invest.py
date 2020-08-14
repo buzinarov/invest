@@ -4,6 +4,7 @@ import time
 import requests
 #from fake_useragent import UserAgent
 #from tqdm import tqdm
+from urllib.request import urlopen
 import psycopg2
 from sqlalchemy import create_engine
 import  sqlalchemy
@@ -15,7 +16,7 @@ url = 'https://www.fundamentus.com.br/detalhes.php?papel='
 
 #header = {'User-Agent':str(ua.chrome)}#{"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.75 Safari/537.36",
   #"X-Requested-With": "XMLHttpRequest"}
-header = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0'}
+#header = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0'}
 titulo = True
 
 
@@ -35,7 +36,9 @@ while True:
     for codigo_acao in acoes_ibov["Código"]:
         print('Acessando informacoes da açao:', codigo_acao)
         
-        r = requests.get(url+codigo_acao, headers = header)
+        r = urlopen(url+codigo_acao)
+        print(r)
+        #r = requests.get(url+codigo_acao, headers = header)
 
         acao = pd.read_html(r.text, decimal=',', thousands='.')
 
