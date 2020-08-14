@@ -2,48 +2,30 @@ import pandas as pd
 import numpy as np
 import time
 import requests
-from selenium import webdriver
 #from fake_useragent import UserAgent
+from tqdm import tqdm
 import psycopg2
 from sqlalchemy import create_engine
-import sqlalchemy
+import  sqlalchemy
 import datetime
-import os
-from selenium.webdriver.chrome.options import Options
 
+url = 'https://www.fundamentus.com.br/detalhes.php?papel='
 
-chrome_options = webdriver.ChromeOptions()
+#ua = UserAgent()
 
-chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
-chrome_options.add_argument("--headless")
-chrome_options.add_argument("--disable-dev-shm-usage")
-chrome_options.add_argument("--no-sandbox")
-
-driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), chrome_options=chrome_options)
-
-
-
-#proxyDict = {
-#    "http"  : os.environ.get('FIXIE_URL', ''),
-#    "https" : os.environ.get('FIXIE_URL', '')
-#}
-
-#ua = UserAgent(verify_ssl=False, use_cache_server=False)
-
-#header = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.76 Safari/537.36'}
-
-header = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36"}
-  #      "referer" : "https://googleads.g.doubleclick.net/pagead/ads?client=ca-pub-3119085269630402&output=html&h=60&slotname=4422770468&adk=2541374544&adf=1327086493&w=468&lmt=1596597228&psa=1&guci=2.2.0.0.2.2.0.0&format=468x60&url=http%3A%2F%2Fwww.fundamentus.com.br%2Findex.php&flash=0&wgl=1&adsid=ChEI8I6k-QUQgZe-rN7o3uC7ARJMAMGjPQwo_H7OXJPtCOA20LPv68oYt6JnRDqba7h5ZiZ0RpqSdt8XPPEDHJ9012Sj_OAHU3azvx85l9O_Hu3x_bJwVTJ7FWlmKCX1Nw&dt=1596597228773&bpp=4&bdt=319&idt=196&shv=r20200803&cbv=r20190131&ptt=9&saldr=aa&abxe=1&cookie=ID%3D4e61b5c385e9103d%3AT%3D1594378670%3AS%3DALNI_MY1uarlDN0xldSekncmjp8nTJaGBw&prev_fmts=468x60&correlator=3390765410852&frm=20&pv=1&ga_vid=1344508319.1594378670&ga_sid=1596597229&ga_hid=380651181&ga_fc=1&iag=0&icsg=142671528&dssz=22&mdo=0&mso=0&u_tz=-180&u_his=11&u_java=0&u_h=1080&u_w=1920&u_ah=1040&u_aw=1920&u_cd=24&u_nplug=3&u_nmime=4&adx=15&ady=412&biw=795&bih=952&scr_x=0&scr_y=0&eid=42530557%2C42530559%2C42530587%2C21066920&oid=3&pvsid=1013780939292229&pem=408&ref=http%3A%2F%2Fwww.fundamentus.com.br%2Fdetalhes.php%3Fpapel%3DVALE3&rx=0&eae=0&fc=896&brdim=0%2C0%2C0%2C0%2C1920%2C0%2C1920%2C1040%2C812%2C969&vis=1&rsz=%7C%7CeE%7C&abl=CS&pfx=0&fu=9216&bc=23&jar=2020-8-5-3&ifi=2&uci=a!2&fsb=1&xpc=dngyDrkgEQ&p=http%3A//www.fundamentus.com.br&dtd=204"
-#}
-#{'User-Agent':str(ua.chrome)}#
+#header = {'User-Agent':str(ua.chrome)}#{"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.75 Safari/537.36",
+  #"X-Requested-With": "XMLHttpRequest"}
+header = {'User-Agent': 'Mozilla/5.0 (X11; OpenBSD i386) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.125 Safari/537.36'}
 titulo = True
 
 
 
 while True:
 
-    #session = requests.session()
-    url = 'http://www.fundamentus.com.br/detalhes.php?papel='
+    engine = create_engine('postgresql+psycopg2://irhulrcgdnzmhy:b6449049c45167aa5ffd968a1f7f327dfc87a92568d912ecc6ee5805bdeae948@ec2-18-210-180-94.compute-1.amazonaws.com:5432/d6tiu0kl6rkiii')
+
+    conn = engine.connect()
+
     consolidado_acoes_diario = pd.read_excel('Consolidado Ibovespa.xlsx')
 
     acoes_ibov = pd.read_excel('IBOV2.xlsx')
@@ -53,15 +35,10 @@ while True:
     for codigo_acao in acoes_ibov["Código"]:
         print('Acessando informacoes da açao:', codigo_acao)
         
-        #driver.get = ('http://www.fundamentus.com.br/detalhes.php?papel='+codigo_acao)
+        r = requests.get(url+codigo_acao, headers = header)
 
-        driver.get(url+codigo_acao)#, headers = header)#, headers = header)
-        
-        r = driver.page_source
-        print(driver.page_source)
-        acao = pd.read_html(r, decimal=',', thousands='.')
+        acao = pd.read_html(r.text, decimal=',', thousands='.')
 
-        
 
         acao[0] = acao[0].transpose()
         acao[1] = acao[1].transpose()
@@ -273,21 +250,14 @@ while True:
     consolidado_acoes_diario = consolidado_acoes_diario.append(consolidado_acoes, sort=False)
 
     consolidado_acoes_diario.to_excel('Consolidado Ibovespa.xlsx', index=False)
-
-    engine = create_engine('postgresql+psycopg2://yvnujpqhlgajpd:22a197cb5edf921fd317aa732fb59e5e29c48459f9e7be3d99400f08e0f4238d@ec2-35-175-155-248.compute-1.amazonaws.com:5432/dbf3b683gg5rhs')
-
-    conn = engine.connect()
-
+    
     consolidado_acoes_diario.to_sql(name = 'invest', con = conn, if_exists = 'append', index = False)
 
-    conn.close()
-    driver.close()
     print(datetime.datetime.now())
 
 
-
-    
+    conn.close()
     
     titulo = False
-    time.sleep(207*207)
+    time.sleep(215*215)
     
