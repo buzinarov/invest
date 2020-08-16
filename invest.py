@@ -3,8 +3,6 @@ import numpy as np
 import time
 import requests
 #from fake_useragent import UserAgent
-#from tqdm import tqdm
-#from urllib.request import urlopen
 import psycopg2
 from sqlalchemy import create_engine
 import sqlalchemy
