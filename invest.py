@@ -23,9 +23,6 @@ url = 'http://www.fundamentus.com.br/detalhes.php?papel='
 #header = {'User-Agent':str(ua.chrome)}
 header = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.75 Safari/537.36",
 "X-Requested-With": "XMLHttpRequest"}
-#header = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0'}
-
-
 
 
 while True:
