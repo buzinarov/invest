@@ -10,20 +10,25 @@ import datetime
 import os 
 
 
+http_proxy  = "http://35.220.130.255:8888"
 
-proxyDict = {
-    "http"  : os.environ.get('QUOTAGUARD_URL', '')
-}
+proxyDict = { 
+          "http"  : http_proxy
+        }
+#proxyDict = {
+#    "http"  : os.environ.get('QUOTAGUARD_URL', '')
+#}
 
 url = 'http://www.fundamentus.com.br/detalhes.php?papel='
 
-#ua = UserAgent()
+#ua = UserAgent(verify_ssl=False)
 
 #header = {'User-Agent':str(ua.chrome)}
 #header = {'User-Agent':str(ua.chrome)}
-header = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.75 Safari/537.36",
-"X-Requested-With": "XMLHttpRequest"}
-
+#header = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.75 Safari/537.36", "X-Requested-With": "XMLHttpRequest"}
+header={
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.47 Safari/537.36'
+    }
 
 while True:
 
@@ -41,7 +46,7 @@ while True:
         print('Acessando informacoes da açao:', codigo_acao)
         
 
-        r = requests.get(url+codigo_acao, proxies = proxyDict, headers = header)
+        r = requests.get(url+codigo_acao, headers = header, proxies=proxyDict)
         print(r)
         acao = pd.read_html(r.text, decimal=',', thousands='.')
 
