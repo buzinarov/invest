@@ -45,7 +45,7 @@ while True:
         
 
         r = requests.get(url+codigo_acao, proxies = proxyDict, headers = header)
-
+        print(r)
         acao = pd.read_html(r.text, decimal=',', thousands='.')
 
 
